@@ -1,8 +1,12 @@
 package com.noisegain.hse_hw1.adapter
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.noisegain.hse_hw1.R
 import com.noisegain.hse_hw1.databinding.ItemHeader2Binding
 import com.noisegain.hse_hw1.databinding.ItemHeaderBinding
 import com.noisegain.hse_hw1.databinding.ItemInfoBinding
@@ -76,7 +80,6 @@ class ItemsAdapter(private val onClickListener: OnClickListener): RecyclerView.A
         private val viewBinding: ItemHeaderBinding
     ) : RecyclerView.ViewHolder(viewBinding.root) {
         fun onBind(item: Item.Header) = with(viewBinding) {
-
             gitButton.setOnClickListener {
                 this@ItemsAdapter.onClickListener
                     .redirTo(item.url)
@@ -92,11 +95,20 @@ class ItemsAdapter(private val onClickListener: OnClickListener): RecyclerView.A
         }
     }
 
-    class ViewHolderHeader2(
+    inner class ViewHolderHeader2(
         private val viewBinding: ItemHeader2Binding
     ) : RecyclerView.ViewHolder(viewBinding.root) {
         fun onBind(item: Item.Header2) = with(viewBinding) {
-
+            /*
+            if (item.filtered) {
+                filteredButton. как поставить картинку блин
+            } else {
+                filteredButton. как поставить картинку блин 2
+            }
+             */
+            filterButton.setOnClickListener {
+                this@ItemsAdapter.onClickListener.startFilterActivity()
+            }
         }
     }
 
