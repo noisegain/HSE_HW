@@ -1,7 +1,7 @@
 package com.noisegain.hse_hw1
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.noisegain.hse_hw1.adapter.FilterAdapter
 import com.noisegain.hse_hw1.databinding.ActivityFilterBinding

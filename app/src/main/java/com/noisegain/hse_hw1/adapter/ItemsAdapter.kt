@@ -1,21 +1,18 @@
 package com.noisegain.hse_hw1.adapter
 
-import android.annotation.SuppressLint
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.noisegain.hse_hw1.R
 import com.noisegain.hse_hw1.databinding.ItemHeader2Binding
 import com.noisegain.hse_hw1.databinding.ItemHeaderBinding
 import com.noisegain.hse_hw1.databinding.ItemInfoBinding
 import com.noisegain.hse_hw1.databinding.ItemLangBinding
 import com.noisegain.hse_hw1.model.Item
 import com.noisegain.hse_hw1.model.OnClickListener
-import java.lang.IllegalArgumentException
+import com.noisegain.hse_hw1.model.ViewHolderBinder
 
-class ItemsAdapter(private val onClickListener: OnClickListener): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ItemsAdapter(private val onClickListener: OnClickListener) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var items = listOf<Item>()
         set(value) {
@@ -23,51 +20,26 @@ class ItemsAdapter(private val onClickListener: OnClickListener): RecyclerView.A
             notifyDataSetChanged()
         }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
-        when (viewType) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        return when (viewType) {
             TYPE_HEADER ->
-                ViewHolderHeader(
-                    ItemHeaderBinding.inflate(
-                        LayoutInflater.from(parent.context), parent, false
-                    )
-                )
+                ViewHolderHeader(ItemHeaderBinding.inflate(inflater, parent, false))
             TYPE_INFO ->
-                ViewHolderInfo(
-                    ItemInfoBinding.inflate(
-                        LayoutInflater.from(parent.context), parent, false
-                    )
-                )
+                ViewHolderInfo(ItemInfoBinding.inflate(inflater, parent, false))
             TYPE_HEADER2 ->
-                ViewHolderHeader2(
-                    ItemHeader2Binding.inflate(
-                        LayoutInflater.from(parent.context), parent, false
-                    )
-                )
+                ViewHolderHeader2(ItemHeader2Binding.inflate(inflater, parent, false))
             TYPE_LANG ->
-                ViewHolderLang(
-                    ItemLangBinding.inflate(
-                        LayoutInflater.from(parent.context), parent, false
-                    )
-                )
-            else ->
-                throw IllegalArgumentException("")
-        }
-
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when(val item = items[position]) {
-            is Item.Header ->
-                (holder as? ViewHolderHeader)?.onBind(item)
-            is Item.Info ->
-                (holder as? ViewHolderInfo)?.onBind(item)
-            is Item.Header2 ->
-                (holder as? ViewHolderHeader2)?.onBind(item)
-            is Item.Lang ->
-                (holder as? ViewHolderLang)?.onBind(item)
+                ViewHolderLang(ItemLangBinding.inflate(inflater, parent, false))
+            else -> error("")
         }
     }
 
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
+        (holder as ViewHolderBinder<*>).onBind(items[position])
+
     override fun getItemViewType(position: Int) =
-        when(items[position]) {
+        when (items[position]) {
             is Item.Header -> TYPE_HEADER
             is Item.Info -> TYPE_INFO
             is Item.Header2 -> TYPE_HEADER2
@@ -76,29 +48,34 @@ class ItemsAdapter(private val onClickListener: OnClickListener): RecyclerView.A
 
     override fun getItemCount() = items.size
 
-    inner class ViewHolderHeader(
-        private val viewBinding: ItemHeaderBinding
-    ) : RecyclerView.ViewHolder(viewBinding.root) {
-        fun onBind(item: Item.Header) = with(viewBinding) {
+    inner class ViewHolderHeader(private val viewBinding: ItemHeaderBinding) :
+        ViewHolderBinder<Item.Header>(viewBinding) {
+        private fun onBind(item: Item.Header) = with(viewBinding) {
             gitButton.setOnClickListener {
                 this@ItemsAdapter.onClickListener
                     .redirTo(item.url)
             }
         }
-    }
 
-    class ViewHolderInfo(
-        private val viewBinding: ItemInfoBinding
-    ) : RecyclerView.ViewHolder(viewBinding.root) {
-        fun onBind(item: Item.Info) = with(viewBinding) {
-            textView.text = item.description
+        override fun onBind(item: Item) {
+            onBind(item as Item.Header)
         }
     }
 
-    inner class ViewHolderHeader2(
-        private val viewBinding: ItemHeader2Binding
-    ) : RecyclerView.ViewHolder(viewBinding.root) {
-        fun onBind(item: Item.Header2) = with(viewBinding) {
+    class ViewHolderInfo(private val viewBinding: ItemInfoBinding) :
+        ViewHolderBinder<Item.Info>(viewBinding) {
+        private fun onBind(item: Item.Info) = with(viewBinding) {
+            textView.text = item.description
+        }
+
+        override fun onBind(item: Item) {
+            onBind(item as Item.Info)
+        }
+    }
+
+    inner class ViewHolderHeader2(private val viewBinding: ItemHeader2Binding) :
+        ViewHolderBinder<Item.Header2>(viewBinding) {
+        private fun onBind(item: Item.Header2) = with(viewBinding) {
             /*
             if (item.filtered) {
                 filteredButton. как поставить картинку блин
@@ -110,14 +87,21 @@ class ItemsAdapter(private val onClickListener: OnClickListener): RecyclerView.A
                 this@ItemsAdapter.onClickListener.startFilterActivity()
             }
         }
+
+        override fun onBind(item: Item) {
+            onBind(item as Item.Header2)
+        }
     }
 
-    class ViewHolderLang(
-        private val viewBinding: ItemLangBinding
-    ) : RecyclerView.ViewHolder(viewBinding.root) {
-        fun onBind(item: Item.Lang) = with(viewBinding) {
+    class ViewHolderLang(private val viewBinding: ItemLangBinding) :
+        ViewHolderBinder<Item.Lang>(viewBinding) {
+        private fun onBind(item: Item.Lang) = with(viewBinding) {
             lang1.text = item.title
             time1.text = item.time
+        }
+
+        override fun onBind(item: Item) {
+            onBind(item as Item.Lang)
         }
     }
 

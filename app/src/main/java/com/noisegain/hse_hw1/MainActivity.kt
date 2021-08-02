@@ -2,18 +2,20 @@ package com.noisegain.hse_hw1
 
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.noisegain.hse_hw1.adapter.ItemsAdapter
 import com.noisegain.hse_hw1.databinding.ActivityMainBinding
 import com.noisegain.hse_hw1.model.Item
 import com.noisegain.hse_hw1.model.OnClickListener
 
-val skills = listOf(Item.Lang("C++", "1 год", 1),
+val skills = listOf(
+    Item.Lang("C++", "1 год", 1),
     Item.Lang("Python", "2 года", 2),
     Item.Lang("Swift", "1 год", 1),
-    Item.Lang("Kotlin", "0.5 года", 0.5))
+    Item.Lang("Kotlin", "0.5 года", 0.5)
+)
 
 var filteredSkills = mutableListOf<Item.Lang>()
 
@@ -27,8 +29,10 @@ class MainActivity : AppCompatActivity(), OnClickListener {
 
     private val basic = listOf(
         Item.Header("Илья Пономаренко", "11 класс", "https://github.com/noisegain"),
-        Item.Info("Приложение для чтения новостей\n" +
-                "Группировка по интересам, выбор источников, тем"),
+        Item.Info(
+            "Приложение для чтения новостей\n" +
+                    "Группировка по интересам, выбор источников, тем"
+        ),
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,10 +40,10 @@ class MainActivity : AppCompatActivity(), OnClickListener {
         filteredSkills.addAll(skills)
         binding = ActivityMainBinding.inflate(layoutInflater)
         itemsAdapter.items = getAdapter()
-        with (binding) {
+        with(binding) {
             setContentView(root)
             title = "О себе"
-            with (rcView) {
+            with(rcView) {
                 layoutManager = LinearLayoutManager(context)
                 adapter = itemsAdapter
             }

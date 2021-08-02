@@ -18,6 +18,11 @@ class FilterAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var allSelected = false
 
+    fun selectAll(boolean: Boolean) {
+        allSelected = boolean
+        notifyItemRangeChanged(1, items.size - 1)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
             TYPE_HEADER ->
@@ -65,8 +70,7 @@ class FilterAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun onBind() = with(viewBinding) {
             checkBox.text = "Все"
             checkBox.setOnCheckedChangeListener { _, isChecked ->
-                allSelected = isChecked
-                notifyDataSetChanged()
+                selectAll(isChecked)
             }
         }
     }
@@ -84,6 +88,10 @@ class FilterAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     filtered.remove(age.first)
                 }
             }
+        }
+
+        fun onSelect(boolean: Boolean) {
+            viewBinding.checkBox.isChecked = boolean
         }
     }
 
